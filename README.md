@@ -1,6 +1,6 @@
 # QueueSync — Real-Time Virtual Queue Platform
 
-[![CI](https://github.com/your-org/queuesync/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/queuesync/actions/workflows/ci.yml)
+[![CI](https://github.com/Pradhyut21/Builder_base/actions/workflows/ci.yml/badge.svg)](https://github.com/Pradhyut21/Builder_base/actions/workflows/ci.yml)
 [![Built with Serverpod](https://img.shields.io/badge/Built%20with-Serverpod%203.4.13-008080?style=flat&logo=dart&logoColor=white)](https://serverpod.dev)
 [![Flutter](https://img.shields.io/badge/Flutter-3.38.4-02569B?style=flat&logo=flutter&logoColor=white)](https://flutter.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
@@ -149,7 +149,7 @@ When multiple visitors submit admission requests concurrently, race conditions c
 
 ### 1. Clone & Setup Workspace
 ```bash
-git clone https://github.com/your-org/queuesync.git
+git clone https://github.com/Pradhyut21/Builder_base.git
 cd queuesync
 dart pub get
 ```
