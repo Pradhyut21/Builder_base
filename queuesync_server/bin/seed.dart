@@ -51,6 +51,20 @@ Future<void> main(List<String> args) async {
     );
 
     print('Seeded 2 counters successfully.');
+
+    // Seed staff users for demo counters.
+    final existingStaff = await StaffUser.db.find(session);
+    if (existingStaff.isEmpty) {
+      await StaffUser.db.insertRow(
+        session,
+        StaffUser(counterId: 1, email: 'staff@queuesync.dev'),
+      );
+      await StaffUser.db.insertRow(
+        session,
+        StaffUser(counterId: 2, email: 'staff_b@queuesync.dev'),
+      );
+      print('Seeded 2 demo staff users successfully.');
+    }
   } finally {
     await session.close();
     await pod.shutdown();

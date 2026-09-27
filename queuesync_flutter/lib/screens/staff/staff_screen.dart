@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:queuesync_client/queuesync_client.dart';
 import '../../theme.dart';
 import '../../providers/client_provider.dart';
@@ -267,7 +268,39 @@ class _StaffScreenState extends ConsumerState<StaffScreen> {
                     ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(
-                child: Text('Error loading queue: $e'),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.lock_outline,
+                        size: 56,
+                        color: AppColors.textMuted,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Staff Authentication Required',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Sign in to manage Counter A queue entries.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      ElevatedButton.icon(
+                        onPressed: () => context.go('/login'),
+                        icon: const Icon(Icons.login),
+                        label: const Text('Sign in to Staff Portal'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

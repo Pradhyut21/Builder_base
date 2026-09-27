@@ -29,6 +29,20 @@ class AuthHelper {
     // session.authenticated is set by Serverpod from the JWT in the request.
     // It is null for unauthenticated requests — no session.auth needed.
     final authInfo = session.authenticated;
+
+    // In local development mode, allow unauthenticated access for demo purposes
+    // mapped to the seeded demo staff user for the counter.
+    if (authInfo == null &&
+        session.serverpod.runMode == ServerpodRunMode.development) {
+      final demoStaff = await StaffUser.db.findFirstRow(
+        session,
+        where: (t) => t.counterId.equals(counterId),
+      );
+      if (demoStaff != null) {
+        return demoStaff.email;
+      }
+    }
+
     if (authInfo == null) {
       session.log(
         'Unauthenticated access attempt on counterId=$counterId',
