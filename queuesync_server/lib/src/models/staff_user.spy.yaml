@@ -1,0 +1,18 @@
+### Links a Serverpod auth user to a counter they manage.
+### Credentials are owned by Serverpod's auth module; this only stores
+### the counter-staff relationship.
+class: StaffUser
+table: staff_users
+
+fields:
+  ### Foreign key to the counter this staff member manages.
+  counterId: int
+  ### Email used for login - must match the auth provider's email.
+  email: String
+
+indexes:
+  staff_users_counter_id_idx:
+    fields: counterId
+  staff_users_email_counter_unique:
+    fields: email, counterId
+    unique: true

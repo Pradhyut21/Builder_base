@@ -1,0 +1,6 @@
+### Thrown when input validation fails (name too short/long, invalid phone, etc).
+exception: ValidationException
+
+fields:
+  field: String
+  message: String

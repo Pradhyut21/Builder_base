@@ -1,0 +1,15 @@
+### Represents a virtual queue counter (e.g., "Clinic Counter A").
+class: Counter
+table: counters
+
+fields:
+  ### Human-readable name of the counter (1–80 characters).
+  name: String
+  ### When true, new joinQueue calls are rejected; existing entries are preserved.
+  isPaused: bool, default=false
+  ### Server-assigned creation timestamp.
+  createdAt: DateTime
+
+indexes:
+  counters_name_idx:
+    fields: name

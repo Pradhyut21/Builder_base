@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "queuesync_flutter",
+            "cwd": "${workspaceFolder}/queuesync_flutter",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "queuesync_server",
+            "cwd": "${workspaceFolder}/queuesync_server",
+            "request": "launch",
+            "type": "dart",
+            "preLaunchTask": "docker_compose_up",
+            "program": "bin/main.dart",
+            "env": {
+                "SERVERPOD_PASSWORD_database": "Z2tFpJ4oAzC8jw3xSWBwV0AvGMJqfRQO"
+            },
+            "args": [
+                "--apply-migrations"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "queuesync (full stack)",
+            "configurations": [
+                "queuesync_server",
+                "queuesync_flutter"
+            ],
+            "presentation": {
+                "order": 1
+            }
+        }
+    ]
+}

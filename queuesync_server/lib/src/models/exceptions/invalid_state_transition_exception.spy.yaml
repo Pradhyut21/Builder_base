@@ -1,0 +1,9 @@
+### Thrown when a state transition is attempted from an invalid source state.
+### e.g., markServed from `waiting` or from a terminal state.
+exception: InvalidStateTransitionException
+
+fields:
+  entryId: int
+  currentStatus: String
+  attemptedAction: String
+  message: String

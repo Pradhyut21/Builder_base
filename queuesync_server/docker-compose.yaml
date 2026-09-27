@@ -1,0 +1,46 @@
+services:
+  # Development services
+  # All credentials below are read from a local .env file (gitignored — see
+  # .env.example for the template). No real credential is committed to the repo.
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: queuesync
+      POSTGRES_PASSWORD: "${QUEUESYNC_DEV_DB_PASSWORD:?Set QUEUESYNC_DEV_DB_PASSWORD in .env — see .env.example}"
+    volumes:
+      - queuesync_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "8091:6379"
+    command: redis-server --requirepass "${QUEUESYNC_DEV_REDIS_PASSWORD:?Set QUEUESYNC_DEV_REDIS_PASSWORD in .env — see .env.example}"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  # Test services
+  postgres_test:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: queuesync_test
+      POSTGRES_PASSWORD: "${QUEUESYNC_TEST_DB_PASSWORD:?Set QUEUESYNC_TEST_DB_PASSWORD in .env — see .env.example}"
+    volumes:
+      - queuesync_test_data:/var/lib/postgresql/data
+
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - "9091:6379"
+    command: redis-server --requirepass "${QUEUESYNC_TEST_REDIS_PASSWORD:?Set QUEUESYNC_TEST_REDIS_PASSWORD in .env — see .env.example}"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  queuesync_data:
+  queuesync_test_data:

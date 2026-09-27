@@ -1,0 +1,34 @@
+version: 2
+updates:
+  # Dart/pub dependencies — server package
+  - package-ecosystem: "pub"
+    directory: "/queuesync_server"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "server"
+    commit-message:
+      prefix: "chore(server)"
+
+  # Flutter/pub dependencies — Flutter client package
+  - package-ecosystem: "pub"
+    directory: "/queuesync_flutter"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "flutter"
+    commit-message:
+      prefix: "chore(client)"
+
+  # GitHub Actions — keep workflow action versions updated
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "chore(ci)"

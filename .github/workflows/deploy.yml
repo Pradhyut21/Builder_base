@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  # Manual trigger only — deploys are deliberate actions during a hackathon,
+  # not accidental side effects of pushing to main.
+  # This prevents "I pushed a typo fix and accidentally deployed a broken build"
+  # the night before the deadline.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy target'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  deploy:
+    name: Deploy to Serverpod Cloud
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.10.3'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+
+      - name: Install Serverpod CLI
+        run: dart pub global activate serverpod_cli 3.4.13
+
+      - name: Build Flutter web app
+        working-directory: queuesync_flutter
+        run: flutter build web --release --wasm
+
+      - name: Deploy to Serverpod Cloud
+        # SERVERPOD_TOKEN must be set as a GitHub Actions secret.
+        # NEVER commit a token to the repo or this workflow file.
+        # Set it at: Settings > Secrets and variables > Actions > New repository secret
+        env:
+          SERVERPOD_TOKEN: ${{ secrets.SERVERPOD_TOKEN }}
+        working-directory: queuesync_server
+        run: |
+          # Deploy the server package.
+          # Replace <your-project-name> with your actual Serverpod Cloud project name.
+          serverpod cloud deploy --project <your-project-name> --auth-token "$SERVERPOD_TOKEN"

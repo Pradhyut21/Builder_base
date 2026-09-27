@@ -1,0 +1,32 @@
+### A visitor's entry in a queue counter.
+### Position is computed server-side on every read; never stored or trusted from the client.
+class: QueueEntry
+table: queue_entries
+
+fields:
+  ### Foreign key to the counter this entry belongs to.
+  counterId: int
+  ### Visitor's display name (trimmed, 1-80 characters).
+  visitorName: String
+  ### Optional phone number (validated format if provided).
+  phone: String?
+  ### Server-assigned join timestamp, used for position ordering.
+  joinedAt: DateTime
+  ### Typed status enum - never a raw String.
+  status: QueueEntryStatus
+  ### Set when status transitions to called.
+  calledAt: DateTime?
+  ### Computed 1-based rank among waiting entries, ordered by joinedAt.
+  ### Populated by the endpoint on reads, NOT stored as a persistent DB column.
+  position: int, default=-1
+  ### Per-session ownership token returned at join time.
+  ### Required to call leaveQueue - prevents visitor A from cancelling visitor B's spot.
+  ownerToken: String
+
+indexes:
+  queue_entries_counter_id_idx:
+    fields: counterId
+  queue_entries_counter_status_idx:
+    fields: counterId, status
+  queue_entries_joined_at_idx:
+    fields: counterId, joinedAt

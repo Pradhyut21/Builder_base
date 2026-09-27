@@ -1,0 +1,6 @@
+### Thrown when a visitor attempts to join a paused counter.
+exception: CounterPausedException
+
+fields:
+  counterId: int
+  message: String

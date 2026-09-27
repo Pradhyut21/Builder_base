@@ -1,0 +1,7 @@
+### Thrown when a requested entry or counter ID does not exist in the database.
+exception: EntryNotFoundException
+
+fields:
+  entityType: String
+  id: int
+  message: String

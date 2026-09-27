@@ -1,0 +1,25 @@
+emailIdp:
+  - login:
+  - startRegistration:
+  - verifyRegistrationCode:
+  - finishRegistration:
+  - startPasswordReset:
+  - verifyPasswordResetCode:
+  - finishPasswordReset:
+  - hasAccount:
+jwtRefresh:
+  - refreshAccessToken:
+queue:
+  - joinQueue:
+  - watchQueue:
+  - leaveQueue:
+staff:
+  - callNext:
+  - markServed:
+  - markNoShow:
+  - pauseCounter:
+  - resumeCounter:
+  - getCounterStatus:
+  - watchStaffQueue:
+greeting:
+  - hello:

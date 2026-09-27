@@ -1,0 +1,12 @@
+### Status of a visitor's queue entry.
+### Using a typed enum prevents invalid states and untyped comparisons.
+### A raw String status field allows invalid states — this enum does not.
+enum: QueueEntryStatus
+serialized: byName
+
+values:
+  - waiting
+  - called
+  - served
+  - expired
+  - left

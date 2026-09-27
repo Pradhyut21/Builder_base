@@ -1,0 +1,7 @@
+### Signal message posted to queue channels when the queue state changes.
+### Subscribers to watchQueue / watchStaffQueue re-fetch full queue data on receipt.
+### The counterId is included so the client can validate the signal is for its counter.
+class: QueueUpdateSignal
+fields:
+  ### The ID of the counter whose queue has changed.
+  counterId: int

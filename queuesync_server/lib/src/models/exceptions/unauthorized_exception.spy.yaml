@@ -1,0 +1,6 @@
+### Thrown when an unauthenticated or unauthorized action is attempted.
+### Covers both: not logged in, and logged in as wrong counter's staff.
+exception: UnauthorizedException
+
+fields:
+  message: String
