@@ -10,6 +10,15 @@
 
 ---
 
+## 🎬 2-Minute Video Showcase
+
+> **Watch the complete 2-minute technical walkthrough with professional narration & dynamic UI demonstration:**
+>
+> 🎥 **[QueueSync 2-Minute Architecture & Live Demo (1080p MP4)](docs/videos/QueueSync_2Min_Showcase.mp4)**  
+> *(Covers the QR visitor flow, real-time WebSocket state streaming, authenticated staff controls, and PostgreSQL `FOR UPDATE` concurrency guarantees)*
+
+---
+
 ## 📸 Real Application Screenshots
 
 *Captured directly from the live, running QueueSync Serverpod backend and Flutter Web client.*
