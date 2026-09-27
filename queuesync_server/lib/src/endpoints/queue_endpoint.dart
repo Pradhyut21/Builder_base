@@ -94,8 +94,10 @@ class QueueEndpoint extends Endpoint {
     return await session.db.transaction<QueueEntry>((tx) async {
       // Acquire a row-level lock on the Counter row (SELECT ... FOR UPDATE)
       // inside the transaction to strictly serialize concurrent joins on this counter.
+      // Parameterized with QueryParameters.positional to prevent any SQL injection risks.
       await session.db.unsafeQuery(
-        'SELECT id FROM "${Counter.t.tableName}" WHERE id = $counterId FOR UPDATE;',
+        'SELECT id FROM "${Counter.t.tableName}" WHERE id = \$1 FOR UPDATE;',
+        parameters: QueryParameters.positional([counterId]),
         transaction: tx,
       );
 
