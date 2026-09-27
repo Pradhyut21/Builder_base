@@ -69,7 +69,10 @@ jobs:
           SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'ci_test_jwt_key_7tY1aE3zB5dG7jL9kM2nP4wR6tY8uI0'
           SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'ci_test_refresh_pepper_9mQ1sU3bF5hJ7kL'
           SERVERPOD_PASSWORD_serviceSecret: 'ci_test_service_secret_4pT7wY1bE3g'
-        run: dart test
+        # -j 1: run test files serially. Each file boots a Serverpod+Postgres instance;
+        # parallel file loading causes multiple instances to race for the same DB,
+        # producing non-deterministic failures. dart_test.yaml also sets concurrency: 1.
+        run: dart test -j 1
 
   # ----------------------------------------------------------------
   # Job 2: Client — Flutter analysis, format check, tests, and build

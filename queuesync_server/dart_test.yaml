@@ -1,2 +1,9 @@
 tags:
   integration: {}
+
+# Integration tests each spin up a real Serverpod + Postgres connection.
+# Parallel file loading (the default) causes multiple Serverpod instances to race
+# for the same DB and produces non-deterministic failures (wrong test runs, timeouts,
+# or paused-counter tests seeing leftover state from a concurrent file).
+# Run one test file at a time to keep isolation clean.
+concurrency: 1
