@@ -195,6 +195,13 @@ class StaffEndpoint extends Endpoint {
           t.status.inSet({QueueEntryStatus.waiting, QueueEntryStatus.called}),
       orderBy: (t) => t.joinedAt,
     );
+    // Secondary tie-breaker on sequential DB id guarantees deterministic
+    // ordering even if two entries share the exact same microsecond timestamp.
+    entries.sort((a, b) {
+      final cmp = a.joinedAt.compareTo(b.joinedAt);
+      if (cmp != 0) return cmp;
+      return (a.id ?? 0).compareTo(b.id ?? 0);
+    });
 
     int pos = 1;
     return entries.map((e) {

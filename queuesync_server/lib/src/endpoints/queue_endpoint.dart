@@ -95,7 +95,7 @@ class QueueEndpoint extends Endpoint {
       // Acquire a row-level lock on the Counter row (SELECT ... FOR UPDATE)
       // inside the transaction to strictly serialize concurrent joins on this counter.
       await session.db.unsafeQuery(
-        'SELECT id FROM counter WHERE id = $counterId FOR UPDATE;',
+        'SELECT id FROM "${Counter.t.tableName}" WHERE id = $counterId FOR UPDATE;',
         transaction: tx,
       );
 
@@ -267,6 +267,13 @@ class QueueEndpoint extends Endpoint {
           t.status.inSet({QueueEntryStatus.waiting, QueueEntryStatus.called}),
       orderBy: (t) => t.joinedAt,
     );
+    // Secondary tie-breaker on sequential DB id guarantees deterministic
+    // ordering even if two entries share the exact same microsecond timestamp.
+    entries.sort((a, b) {
+      final cmp = a.joinedAt.compareTo(b.joinedAt);
+      if (cmp != 0) return cmp;
+      return (a.id ?? 0).compareTo(b.id ?? 0);
+    });
 
     int pos = 1;
     return entries.map((e) {
@@ -294,6 +301,11 @@ class QueueEndpoint extends Endpoint {
       orderBy: (t) => t.joinedAt,
       transaction: transaction,
     );
+    waiting.sort((a, b) {
+      final cmp = a.joinedAt.compareTo(b.joinedAt);
+      if (cmp != 0) return cmp;
+      return (a.id ?? 0).compareTo(b.id ?? 0);
+    });
     final idx = waiting.indexWhere((e) => e.id == entryId);
     return idx >= 0 ? idx + 1 : -1;
   }
