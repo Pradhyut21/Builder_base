@@ -282,15 +282,15 @@ class _StaffScreenState extends ConsumerState<StaffScreen> {
                       Text(
                         'Staff Authentication Required',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Sign in to manage Counter A queue entries.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       ElevatedButton.icon(

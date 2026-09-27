@@ -31,9 +31,9 @@ webServer:
 # This is the database setup for your test server.
 database:
   host: localhost
-  port: 9090
+  port: 5432
   name: queuesync_test
-  user: postgres
+  user: queuesync_user
   #maxConnectionCount: 10 # Defaults to 10, a negative or null value removes the limit
 
 # This is the setup for your Redis test instance.

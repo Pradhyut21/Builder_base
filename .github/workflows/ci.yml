@@ -8,10 +8,10 @@ on:
 
 jobs:
   # ----------------------------------------------------------------
-  # Job 1: Server — Dart analysis, format check, and tests
+  # Job 1: Server — Dart analysis, format check, and integration tests
   # ----------------------------------------------------------------
   server:
-    name: Server (Dart)
+    name: Server (Dart & Serverpod)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,15 +36,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Dart SDK
-        uses: dart-lang/setup-dart@v1
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          # Pin exact version matching pubspec.yaml environment.sdk constraint.
-          # Do not change this independently of the project's SDK version.
-          sdk: '3.10.3'
+          # In a monorepo workspace containing queuesync_flutter, resolving
+          # dependencies requires the Flutter SDK. Flutter includes the Dart SDK.
+          flutter-version: '3.38.4'
+          channel: 'stable'
+          cache: true
 
       - name: Install dependencies
-        run: dart pub get
+        run: flutter pub get
 
       - name: Analyze (fail on any warning, not just errors)
         # --fatal-infos ensures the build fails on analyzer warnings,
@@ -55,19 +57,18 @@ jobs:
         # Fail if anything is unformatted — enforced in CI, not just habit.
         run: dart format --output=none --set-exit-if-changed .
 
-      - name: Run Serverpod generator
-        run: dart run serverpod_cli generate
-
-      - name: Apply database migrations
-        env:
-          QUEUESYNC_DB_PASSWORD: queuesync_test_password
-        # --apply-migrations in Serverpod 3.4 applies pending migrations and then
-        # exits (it does not start the HTTP server). --mode test points to config/test.yaml.
-        run: dart run bin/main.dart --apply-migrations --mode test
-
       - name: Run tests
         env:
-          QUEUESYNC_DB_PASSWORD: queuesync_test_password
+          SERVERPOD_DATABASE_PASSWORD: queuesync_test_password
+          SERVERPOD_PASSWORD_database: queuesync_test_password
+          SERVERPOD_DATABASE_USER: queuesync_user
+          SERVERPOD_DATABASE_NAME: queuesync_test
+          SERVERPOD_DATABASE_PORT: 5432
+          SERVERPOD_DATABASE_HOST: localhost
+          SERVERPOD_PASSWORD_emailSecretHashPepper: 'ci_test_pepper_1oP3aS6dF8hJ0kL2'
+          SERVERPOD_PASSWORD_jwtHmacSha512PrivateKey: 'ci_test_jwt_key_7tY1aE3zB5dG7jL9kM2nP4wR6tY8uI0'
+          SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: 'ci_test_refresh_pepper_9mQ1sU3bF5hJ7kL'
+          SERVERPOD_PASSWORD_serviceSecret: 'ci_test_service_secret_4pT7wY1bE3g'
         run: dart test
 
   # ----------------------------------------------------------------
@@ -109,7 +110,7 @@ jobs:
         run: flutter build web --release
 
   # ----------------------------------------------------------------
-  # Job 3: Security scan — dependency audit and Dependabot config check
+  # Job 3: Security scan — dependency audit and secret check
   # ----------------------------------------------------------------
   security-scan:
     name: Security Scan
@@ -119,32 +120,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Dart
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.10.3'
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.38.4'
           channel: 'stable'
+          cache: true
 
       - name: Audit server dependencies
         working-directory: queuesync_server
         # Surfaces outdated packages as visible workflow output.
         # Does not fail the build — surfacing is the goal.
         run: |
-          dart pub get
-          dart pub outdated || true
-          echo "--- Security audit complete ---"
+          flutter pub get
+          flutter pub outdated || true
+          echo "--- Server dependency audit complete ---"
 
       - name: Audit client dependencies
         working-directory: queuesync_flutter
         run: |
           flutter pub get
           flutter pub outdated || true
-          echo "--- Security audit complete ---"
+          echo "--- Client dependency audit complete ---"
 
       - name: Check for secret patterns in codebase
         # Basic guard — not a substitute for a secrets scanner,
